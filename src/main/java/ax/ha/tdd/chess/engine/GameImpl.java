@@ -9,11 +9,12 @@ public class GameImpl implements Game{
 
     boolean isNewGame = true;
     String lastMoveResult;
+    Color currentPlayer = Color.WHITE;
 
     @Override
     public Color getPlayerToMove() {
         //TODO this should reflect the current state.
-        return Color.WHITE;
+        return currentPlayer;
     }
 
     @Override
@@ -40,10 +41,25 @@ public class GameImpl implements Game{
             Square source = new Square(moves[0]);
             Square destination = new Square(moves[1]);
             //2. Check if the piece is allowed to move to the destination
+            if (board.getPieceAt(source) == null) {
+                lastMoveResult = "Illegal move. No piece at " + source.toAlgebraic();
+                return;
+            }
+            if (board.getPieceAt(source).getColor() != currentPlayer) {
+                lastMoveResult = "Illegal move. It's " + currentPlayer + "'s turn.";
+                return;
+            }
+
             if (board.getPieceAt(source).canMove(board, destination)) {
                 board.getPieceAt(source).setLocation(destination);
                 board.addPiece(board.getPieceAt(source));
                 board.removePieceAt(source);
+
+                if (currentPlayer == Color.WHITE) {
+                    currentPlayer = Color.BLACK;
+                } else {
+                    currentPlayer = Color.WHITE;
+                }
 
                 lastMoveResult = "Player moved piece from " + source.toAlgebraic() + " to " + destination.toAlgebraic();
             } else {
