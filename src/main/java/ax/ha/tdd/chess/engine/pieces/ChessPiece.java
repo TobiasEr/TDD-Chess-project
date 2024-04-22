@@ -29,4 +29,6 @@ public interface ChessPiece {
      * Can the piece move to the destination square on this chessboard?
      */
     boolean canMove(Chessboard chessboard, Square destination);
+
+    void setLocation(Square newLocation);
 }
