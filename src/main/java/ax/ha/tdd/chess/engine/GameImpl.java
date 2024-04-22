@@ -1,10 +1,14 @@
 package ax.ha.tdd.chess.engine;
 
+import ax.ha.tdd.chess.engine.pieces.ChessPiece;
+import ax.ha.tdd.chess.engine.pieces.ChessPieceBase;
+
 public class GameImpl implements Game{
 
     final ChessboardImpl board = ChessboardImpl.startingBoard();
 
     boolean isNewGame = true;
+    String lastMoveResult;
 
     @Override
     public Color getPlayerToMove() {
@@ -24,15 +28,30 @@ public class GameImpl implements Game{
         if (isNewGame) {
             return "Game hasn't begun";
         }
-        return "Last move was successful (default reply, change this)";
+        return lastMoveResult;
     }
 
     @Override
     public void move(String move) {
         //TODO this should trigger your move logic.
         //1. Parse the source and destination of the input "move"
+        try {
+            String[] moves = move.split("-");
+            Square source = new Square(moves[0]);
+            Square destination = new Square(moves[1]);
+            //2. Check if the piece is allowed to move to the destination
+            if (board.getPieceAt(source).canMove(board, destination)) {
+                board.getPieceAt(source).setLocation(destination);
+                board.addPiece(board.getPieceAt(source));
+                board.removePieceAt(source);
 
-        //2. Check if the piece is allowed to move to the destination
+                lastMoveResult = "Player moved piece from " + source.toAlgebraic() + " to " + destination.toAlgebraic();
+            } else {
+                lastMoveResult = "Illegal move was tried.";
+            }
+        } catch (IllegalArgumentException e) {
+            lastMoveResult = "Illegal input or out of bounds.";
+        }
 
         //3. If so, update board (and last move message), otherwise only update last move message to show that an illegal move was tried
 
