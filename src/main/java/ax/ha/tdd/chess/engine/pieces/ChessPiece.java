@@ -31,4 +31,6 @@ public interface ChessPiece {
     boolean canMove(Chessboard chessboard, Square destination);
 
     void setLocation(Square newLocation);
+
+    boolean sameColorAtDestination(ChessPiece destinationPiece);
 }
