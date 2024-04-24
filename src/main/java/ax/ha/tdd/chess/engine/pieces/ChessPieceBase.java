@@ -4,7 +4,6 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Square;
 import ax.ha.tdd.chess.engine.Color;
 
-import java.util.List;
 import java.util.Objects;
 
 public abstract class ChessPieceBase implements ChessPiece {
@@ -69,5 +68,12 @@ public abstract class ChessPieceBase implements ChessPiece {
     @Override
     public void setLocation(Square newLocation) {
         location = newLocation;
+    }
+
+    @Override
+    public boolean sameColorAtDestination(ChessPiece destinationPiece) {
+        if (destinationPiece == null)
+            return false;
+        return color == destinationPiece.getColor();
     }
 }
