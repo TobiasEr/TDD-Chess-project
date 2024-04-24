@@ -1,9 +1,7 @@
 package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.console.ChessboardWriter;
-import ax.ha.tdd.chess.engine.pieces.ChessPiece;
 import ax.ha.tdd.chess.engine.pieces.Pawn;
-import ax.ha.tdd.chess.engine.pieces.PieceType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,5 +68,38 @@ public class PawnTests {
         chessboard.addPiece(secondPawn);
 
         assertFalse(firstPawn.canMove(chessboard, new Square("e5")));
+    }
+
+    @Test
+    public void testCanNotMovePastPieceOnInitialTwoStepMove() {
+        Chessboard chessboard = new ChessboardImpl();
+        Pawn firstPawn = new Pawn(Color.WHITE, new Square("e2"));
+        Pawn secondPawn = new Pawn(Color.WHITE, new Square("e3"));
+        chessboard.addPiece(firstPawn);
+        chessboard.addPiece(secondPawn);
+
+        assertFalse(firstPawn.canMove(chessboard, new Square("e4")));
+    }
+
+    @Test
+    public void testCanCapturePieceOnCaptureMove() {
+        Chessboard chessboard = new ChessboardImpl();
+        Pawn firstPawn = new Pawn(Color.WHITE, new Square("d4"));
+        Pawn secondPawn = new Pawn(Color.BLACK, new Square("c5"));
+        chessboard.addPiece(firstPawn);
+        chessboard.addPiece(secondPawn);
+
+        assertTrue(firstPawn.canMove(chessboard, new Square("c5")));
+    }
+
+    @Test
+    public void testCanNotCaptureSameColorPieceOnCaptureMove() {
+        Chessboard chessboard = new ChessboardImpl();
+        Pawn firstPawn = new Pawn(Color.WHITE, new Square("d4"));
+        Pawn secondPawn = new Pawn(Color.WHITE, new Square("c5"));
+        chessboard.addPiece(firstPawn);
+        chessboard.addPiece(secondPawn);
+
+        assertFalse(firstPawn.canMove(chessboard, new Square("c5")));
     }
 }
