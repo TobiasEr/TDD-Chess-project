@@ -1,8 +1,6 @@
 package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.engine.pieces.ChessPiece;
-import ax.ha.tdd.chess.engine.pieces.ChessPieceStub;
-import ax.ha.tdd.chess.engine.pieces.PieceType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -83,15 +81,15 @@ public class ChessboardTests {
     @Test
     public void testStartingBoardKingsInTheRightSpot() {
         final Chessboard chessboard = ChessboardImpl.startingBoard();
-        Assertions.assertEquals(new ChessPieceStub(PieceType.KING, Color.BLACK), chessboard.getPieceAt(new Square(4, 0)));
-        Assertions.assertEquals(new ChessPieceStub(PieceType.KING, Color.WHITE), chessboard.getPieceAt(new Square(4, 7)));
+        Assertions.assertEquals("K", chessboard.getPieceAt(new Square(4, 0)).getSymbol());
+        Assertions.assertEquals("K", chessboard.getPieceAt(new Square(4, 7)).getSymbol());
     }
 
     @Test
     public void testStartingBoardQueensInTheRightSpot() {
         final Chessboard chessboard = ChessboardImpl.startingBoard();
-        Assertions.assertEquals(new ChessPieceStub(PieceType.QUEEN, Color.BLACK), chessboard.getPieceAt(new Square(3, 0)));
-        Assertions.assertEquals(new ChessPieceStub(PieceType.QUEEN, Color.WHITE), chessboard.getPieceAt(new Square(3, 7)));
+        Assertions.assertEquals("Q", chessboard.getPieceAt(new Square(3, 0)).getSymbol());
+        Assertions.assertEquals("Q", chessboard.getPieceAt(new Square(3, 7)).getSymbol());
     }
 
     @Test
