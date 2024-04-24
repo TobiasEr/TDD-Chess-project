@@ -23,39 +23,22 @@ public class Rook extends ChessPieceBase implements ChessPiece {
             return false;
         }
 
-        if (Math.abs(deltaY) > 0) {
-            if (deltaY > 1) {
-                for (int i= location.getY()+1; i < destination.getY(); i++) {
-                    if (chessboard.getPieceAt(new Square(location.getX(), i)) != null) {
-                        return false;
-                    }
-                }
-            } else if (deltaY < -1) {
-                for (int i= location.getY()-1; i > destination.getY(); i--) {
-                    if (chessboard.getPieceAt(new Square(location.getX(), i)) != null) {
-                        return false;
-                    }
+        int step;
+        if (deltaX == 0) {
+            step = (deltaY > 0) ? 1 : -1;
+            for (int i= location.getY() + step; i != destination.getY(); i += step) {
+                if (chessboard.getPieceAt(new Square(location.getX(), i)) != null) {
+                    return false;
                 }
             }
-            return true;
-        }
-
-        if (Math.abs(deltaX) > 0) {
-            if (deltaX > 1) {
-                for (int i= location.getX()+1; i < destination.getX(); i++) {
-                    if (chessboard.getPieceAt(new Square(i, location.getY())) != null) {
-                        return false;
-                    }
-                }
-            } else if (deltaX < -1) {
-                for (int i= location.getX()-1; i > destination.getX(); i--) {
-                    if (chessboard.getPieceAt(new Square(i, location.getY())) != null) {
-                        return false;
-                    }
+        } else {
+            step = (deltaX > 0) ? 1 : -1;
+            for (int i = location.getX() + step; i != destination.getX(); i += step) {
+                if (chessboard.getPieceAt(new Square(i, location.getY())) != null) {
+                    return false;
                 }
             }
-            return true;
         }
-        return false;
+        return true;
     }
 }
