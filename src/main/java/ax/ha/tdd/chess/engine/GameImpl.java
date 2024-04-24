@@ -1,7 +1,6 @@
 package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.engine.pieces.ChessPiece;
-import ax.ha.tdd.chess.engine.pieces.ChessPieceBase;
 
 public class GameImpl implements Game{
 
@@ -35,24 +34,24 @@ public class GameImpl implements Game{
     @Override
     public void move(String move) {
         //TODO this should trigger your move logic.
-        //1. Parse the source and destination of the input "move"
         try {
             String[] moves = move.split("-");
             Square source = new Square(moves[0]);
             Square destination = new Square(moves[1]);
-            //2. Check if the piece is allowed to move to the destination
-            if (board.getPieceAt(source) == null) {
+            ChessPiece sourcePiece = board.getPieceAt(source);
+
+            if (sourcePiece == null) {
                 lastMoveResult = "Illegal move. No piece at " + source.toAlgebraic();
                 return;
             }
-            if (board.getPieceAt(source).getColor() != currentPlayer) {
+            if (sourcePiece.getColor() != currentPlayer) {
                 lastMoveResult = "Illegal move. It's " + currentPlayer + "'s turn.";
                 return;
             }
 
-            if (board.getPieceAt(source).canMove(board, destination)) {
-                board.getPieceAt(source).setLocation(destination);
-                board.addPiece(board.getPieceAt(source));
+            if (sourcePiece.canMove(board, destination)) {
+                sourcePiece.setLocation(destination);
+                board.addPiece(sourcePiece);
                 board.removePieceAt(source);
 
                 if (currentPlayer == Color.WHITE) {
@@ -68,8 +67,6 @@ public class GameImpl implements Game{
         } catch (IllegalArgumentException e) {
             lastMoveResult = "Illegal input or out of bounds.";
         }
-
-        //3. If so, update board (and last move message), otherwise only update last move message to show that an illegal move was tried
 
         isNewGame = false;
         System.out.println("Player tried to perform move: " + move);
