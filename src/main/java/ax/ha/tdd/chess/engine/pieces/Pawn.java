@@ -17,7 +17,7 @@ public class Pawn extends ChessPieceBase implements ChessPiece{
         int deltaX = Math.abs(destination.getX() - location.getX());
 
         ChessPiece destinationPiece = chessboard.getPieceAt(destination);
-        if (sameColorAtDestination(destinationPiece)) {
+        if (sameColorOrKingAtDestination(destinationPiece)) {
             return false; // Cannot capture own piece
         }
 

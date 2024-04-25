@@ -71,9 +71,10 @@ public abstract class ChessPieceBase implements ChessPiece {
     }
 
     @Override
-    public boolean sameColorAtDestination(ChessPiece destinationPiece) {
-        if (destinationPiece == null)
+    public boolean sameColorOrKingAtDestination(ChessPiece destinationPiece) {
+        if (destinationPiece == null) {
             return false;
-        return color == destinationPiece.getColor();
+        }
+        return destinationPiece.getType().equals(PieceType.KING) || color == destinationPiece.getColor();
     }
 }

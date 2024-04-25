@@ -1,5 +1,6 @@
 package ax.ha.tdd.chess.engine;
 
+import ax.ha.tdd.chess.engine.pieces.King;
 import ax.ha.tdd.chess.engine.pieces.Rook;
 import org.junit.jupiter.api.Test;
 
@@ -81,5 +82,16 @@ public class RookTests {
         chessboard.addPiece(secondRook);
 
         assertTrue(firstRook.canMove(chessboard, new Square("f4")));
+    }
+
+    @Test
+    public void testRookCanNotCaptureKing() {
+        Chessboard chessboard = new ChessboardImpl();
+        Rook rookPiece = new Rook(Color.WHITE, new Square("a4"));
+        King kingToCapture = new King(Color.WHITE, new Square("d4"));
+        chessboard.addPiece(rookPiece);
+        chessboard.addPiece(kingToCapture);
+
+        assertFalse(rookPiece.canMove(chessboard, new Square("d4")));
     }
 }

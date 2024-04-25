@@ -15,7 +15,7 @@ public class Bishop extends ChessPieceBase implements ChessPiece {
         int deltaX = destination.getX() - location.getX();
 
         ChessPiece destinationPiece = chessboard.getPieceAt(destination);
-        if (sameColorAtDestination(destinationPiece)) {
+        if (sameColorOrKingAtDestination(destinationPiece)) {
             return false; // Cannot capture own piece
         }
         if (Math.abs(deltaX) != Math.abs(deltaY)) {

@@ -1,6 +1,7 @@
 package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.engine.pieces.Bishop;
+import ax.ha.tdd.chess.engine.pieces.King;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -81,5 +82,16 @@ public class BishopTests {
         chessboard.addPiece(bishopToCapture);
 
         assertTrue(bishopMoving.canMove(chessboard, new Square("c4")));
+    }
+
+    @Test
+    public void testBishopCanNotCaptureKing() {
+        Chessboard chessboard = new ChessboardImpl();
+        Bishop bishopMoving = new Bishop(Color.WHITE, new Square("a2"));
+        King kingToCapture = new King(Color.BLACK, new Square("c4"));
+        chessboard.addPiece(bishopMoving);
+        chessboard.addPiece(kingToCapture);
+
+        assertFalse(bishopMoving.canMove(chessboard, new Square("c4")));
     }
 }

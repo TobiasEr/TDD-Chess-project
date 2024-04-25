@@ -1,5 +1,6 @@
 package ax.ha.tdd.chess.engine;
 
+import ax.ha.tdd.chess.engine.pieces.King;
 import ax.ha.tdd.chess.engine.pieces.Queen;
 import org.junit.jupiter.api.Test;
 
@@ -90,5 +91,16 @@ public class QueenTests {
         chessboard.addPiece(queenToCapture);
 
         assertTrue(queenMoving.canMove(chessboard, new Square("c4")));
+    }
+
+    @Test
+    public void testQueenCanCaptureKingOnCaptureMove() {
+        Chessboard chessboard = new ChessboardImpl();
+        Queen queenMoving = new Queen(Color.WHITE, new Square("a2"));
+        King kingToCapture = new King(Color.BLACK, new Square("c4"));
+        chessboard.addPiece(queenMoving);
+        chessboard.addPiece(kingToCapture);
+
+        assertFalse(queenMoving.canMove(chessboard, new Square("c4")));
     }
 }

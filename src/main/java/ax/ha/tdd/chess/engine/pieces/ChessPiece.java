@@ -32,5 +32,5 @@ public interface ChessPiece {
 
     void setLocation(Square newLocation);
 
-    boolean sameColorAtDestination(ChessPiece destinationPiece);
+    boolean sameColorOrKingAtDestination(ChessPiece destinationPiece);
 }

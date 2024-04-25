@@ -1,6 +1,7 @@
 package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.console.ChessboardWriter;
+import ax.ha.tdd.chess.engine.pieces.King;
 import ax.ha.tdd.chess.engine.pieces.Pawn;
 import org.junit.jupiter.api.Test;
 
@@ -101,5 +102,16 @@ public class PawnTests {
         chessboard.addPiece(secondPawn);
 
         assertFalse(firstPawn.canMove(chessboard, new Square("c5")));
+    }
+
+    @Test
+    public void testCanNotCaptureKing() {
+        Chessboard chessboard = new ChessboardImpl();
+        Pawn pawnMoving = new Pawn(Color.WHITE, new Square("d4"));
+        King KingToCapture = new King(Color.WHITE, new Square("c5"));
+        chessboard.addPiece(pawnMoving);
+        chessboard.addPiece(KingToCapture);
+
+        assertFalse(pawnMoving.canMove(chessboard, new Square("c5")));
     }
 }
