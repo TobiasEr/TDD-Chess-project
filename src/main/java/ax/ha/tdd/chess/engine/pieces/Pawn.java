@@ -12,16 +12,14 @@ public class Pawn extends ChessPieceBase implements ChessPiece{
 
     @Override
     public boolean canMove(Chessboard chessboard, Square destination) {
-        //TODO here goes move logic for pawns
         int deltaY = destination.getY() - location.getY();
         int deltaX = Math.abs(destination.getX() - location.getX());
 
         ChessPiece destinationPiece = chessboard.getPieceAt(destination);
         if (sameColorOrKingAtDestination(destinationPiece)) {
-            return false; // Cannot capture own piece
+            return false;
         }
 
-        // Determine valid movement based on pawn color
         if (this.color == Color.BLACK) {
             if (deltaY == 1 && deltaX == 1 && destinationPiece != null) {
                 return true; // Capture move for black pawn
