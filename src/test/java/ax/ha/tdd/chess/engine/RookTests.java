@@ -88,7 +88,7 @@ public class RookTests {
     public void testRookCanNotCaptureKing() {
         Chessboard chessboard = new ChessboardImpl();
         Rook rookPiece = new Rook(Color.WHITE, new Square("a4"));
-        King kingToCapture = new King(Color.WHITE, new Square("d4"));
+        King kingToCapture = new King(Color.BLACK, new Square("d4"));
         chessboard.addPiece(rookPiece);
         chessboard.addPiece(kingToCapture);
 

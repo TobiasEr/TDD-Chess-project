@@ -108,7 +108,7 @@ public class PawnTests {
     public void testCanNotCaptureKing() {
         Chessboard chessboard = new ChessboardImpl();
         Pawn pawnMoving = new Pawn(Color.WHITE, new Square("d4"));
-        King KingToCapture = new King(Color.WHITE, new Square("c5"));
+        King KingToCapture = new King(Color.BLACK, new Square("c5"));
         chessboard.addPiece(pawnMoving);
         chessboard.addPiece(KingToCapture);
 

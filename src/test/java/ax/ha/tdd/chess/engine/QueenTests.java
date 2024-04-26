@@ -94,7 +94,7 @@ public class QueenTests {
     }
 
     @Test
-    public void testQueenCanCaptureKingOnCaptureMove() {
+    public void testQueenCanNotCaptureKingOnCaptureMove() {
         Chessboard chessboard = new ChessboardImpl();
         Queen queenMoving = new Queen(Color.WHITE, new Square("a2"));
         King kingToCapture = new King(Color.BLACK, new Square("c4"));
