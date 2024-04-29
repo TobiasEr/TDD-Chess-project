@@ -90,4 +90,15 @@ public class KingTests {
 
         assertFalse(firstKing.canMove(chessboard, new Square("d5")));
     }
+
+    @Test
+    public void testKingCanNotGoCloseToKing() {
+        Chessboard chessboard = new ChessboardImpl();
+        King firstKing = new King(Color.WHITE, new Square("e4"));
+        King secondKing = new King(Color.BLACK, new Square("e6"));
+        chessboard.addPiece(firstKing);
+        chessboard.addPiece(secondKing);
+
+        assertFalse(firstKing.canMove(chessboard, new Square("e5")));
+    }
 }
