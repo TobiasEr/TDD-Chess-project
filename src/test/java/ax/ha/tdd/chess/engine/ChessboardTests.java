@@ -145,14 +145,17 @@ public class ChessboardTests {
         King king = new King(Color.WHITE, new Square("c8"));
         Rook firstRook = new Rook(Color.BLACK, new Square("g8"));
         Rook secondRook = new Rook(Color.BLACK, new Square("h7"));
+        Pawn pawn = new Pawn(Color.BLACK, new Square("e2"));
         chessboard.addPiece(king);
         chessboard.addPiece(firstRook);
         chessboard.addPiece(secondRook);
+        chessboard.addPiece(pawn);
+
+        System.out.println(new ChessboardWriter().print(chessboard));
 
         assertFalse(king.canMove(chessboard, new Square("c8")));
         assertTrue(chessboard.isKingCheckmate(firstRook, king));
 
-        System.out.println(new ChessboardWriter().print(chessboard));
     }
 
     @Test
@@ -167,9 +170,9 @@ public class ChessboardTests {
         chessboard.addPiece(firstBlackRook);
         chessboard.addPiece(secondBlackRook);
 
-        assertFalse(chessboard.isKingCheckmate(firstBlackRook, king));
-
         System.out.println(new ChessboardWriter().print(chessboard));
+
+        assertFalse(chessboard.isKingCheckmate(firstBlackRook, king));
     }
 
     @Test
@@ -214,9 +217,9 @@ public class ChessboardTests {
         chessboard.addPiece(blackBishop);
         chessboard.addPiece(blackKnight);
 
-        assertTrue(chessboard.isKingCheckmate(blackBishop, whiteKing));
-
         System.out.println(new ChessboardWriter().print(chessboard));
+
+        assertTrue(chessboard.isKingCheckmate(blackBishop, whiteKing));
     }
 
     @Test
@@ -237,7 +240,5 @@ public class ChessboardTests {
         chessboard.addPiece(blackQueen);
 
         assertTrue(chessboard.isKingCheckmate(blackQueen, whiteKing));
-
-        System.out.println(new ChessboardWriter().print(chessboard));
     }
 }

@@ -39,6 +39,7 @@ public class GameImpl implements Game{
             Square source = new Square(moves[0]);
             Square destination = new Square(moves[1]);
             ChessPiece sourcePiece = board.getPieceAt(source);
+            ChessPiece opponentKing;
 
             if (sourcePiece == null) {
                 lastMoveResult = "Illegal move. No piece at " + source.toAlgebraic();
@@ -59,8 +60,16 @@ public class GameImpl implements Game{
                 } else {
                     currentPlayer = Color.WHITE;
                 }
+                lastMoveResult = "Player moved " + sourcePiece.getType() +
+                        " from " + source.toAlgebraic() + " to " + destination.toAlgebraic();
+                opponentKing = board.getOpponentKing(sourcePiece.getColor());
 
-                lastMoveResult = "Player moved piece from " + source.toAlgebraic() + " to " + destination.toAlgebraic();
+                if (board.isKingCheckmate(sourcePiece, opponentKing)) {
+                    lastMoveResult += ". " + opponentKing.getColor() + " is checkmate! " +
+                    sourcePiece.getColor() + " won the match!";
+                } else if (board.isKingChecked(sourcePiece, opponentKing)) {
+                    lastMoveResult += ". " + opponentKing.getColor() + " is checked!";
+                }
             } else {
                 lastMoveResult = "Illegal move was tried.";
             }

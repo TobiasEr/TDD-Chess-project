@@ -2,7 +2,6 @@ package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.engine.pieces.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -67,16 +66,16 @@ public class ChessboardImpl implements Chessboard {
             if (opponentKing.getPossibleMoves(this).size() == 0) {
                 for (ChessPiece[] row : this) {
                     for (ChessPiece piece : row) {
-                        List<Square> possibleMoves = new ArrayList<>();
+                        List<Square> possibleMoves;
                         if (piece != null && !piece.equals(opponentKing) && piece.getColor() != attackingPiece.getColor()) {
                             possibleMoves = piece.getPossibleMoves(this);
                             if (possibleMoves.size() > 0) {
                                 for (Square move: possibleMoves) {
                                     ChessPiece destinationPiece = getPieceAt(move);
-                                    ChessPiece movingPiece = piece;
-                                    movingPiece.setLocation(move);
-                                    addPiece(movingPiece);
-                                    removePieceAt(piece.getLocation());
+                                    Square srcLocation = piece.getLocation();
+                                    piece.setLocation(move);
+                                    addPiece(piece);
+                                    removePieceAt(srcLocation);
 
                                     if (!isKingChecked(attackingPiece, opponentKing)) {
                                         if (destinationPiece != null) {
@@ -84,6 +83,7 @@ public class ChessboardImpl implements Chessboard {
                                         } else {
                                             removePieceAt(move);
                                         }
+                                        piece.setLocation(srcLocation);
                                         addPiece(piece);
                                         return false;
                                     }
@@ -92,6 +92,7 @@ public class ChessboardImpl implements Chessboard {
                                     } else {
                                         removePieceAt(move);
                                     }
+                                    piece.setLocation(srcLocation);
                                     addPiece(piece);
                                 }
                             }
