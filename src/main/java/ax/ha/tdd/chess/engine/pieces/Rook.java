@@ -4,6 +4,9 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Color;
 import ax.ha.tdd.chess.engine.Square;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Rook extends ChessPieceBase implements ChessPiece {
 
     public Rook(Color player, Square location) {
@@ -40,5 +43,29 @@ public class Rook extends ChessPieceBase implements ChessPiece {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Square> getPossibleMoves(Chessboard chessboard) {
+        List<Square> possibleMoves = new ArrayList<>();
+        int[] steps = {1, -1};
+
+        for (int step: steps) {
+            for (int i = 1; i<8; i++) {
+                try {
+                    Square destination = new Square(location.getX() + step * i, location.getY());
+                    if (canMove(chessboard, destination)) {
+                        possibleMoves.add(destination);
+                    }
+                } catch (IllegalArgumentException ignore) {}
+                try {
+                    Square destination = new Square(location.getX(), location.getY() + step * i);
+                    if (canMove(chessboard, destination)) {
+                        possibleMoves.add(destination);
+                    }
+                } catch (IllegalArgumentException ignore) {}
+            }
+        }
+        return possibleMoves;
     }
 }

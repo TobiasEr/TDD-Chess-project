@@ -2,6 +2,7 @@ package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.engine.pieces.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,9 +33,75 @@ public class ChessboardImpl implements Chessboard {
         board[chessPiece.getLocation().getY()][chessPiece.getLocation().getX()] = chessPiece;
     }
 
-    @Override
     public void removePieceAt(Square square) {
         board[square.getY()][square.getX()] = null;
+    }
+
+    @Override
+    public ChessPiece getOpponentKing(Color color) {
+        ChessPiece opponentKing = null;
+        for (ChessPiece[] row : this) {
+            for (ChessPiece piece : row) {
+                if (piece != null && piece.getType() == PieceType.KING && piece.getColor() != color) {
+                    opponentKing = piece;
+                }
+            }
+        }
+        return opponentKing;
+    }
+
+    @Override
+    public boolean isKingChecked(ChessPiece attackingPiece, ChessPiece opponentKing) {
+        boolean kingIsChecked;
+
+        this.removePieceAt(opponentKing.getLocation());
+        kingIsChecked = attackingPiece.canMove(this, opponentKing.getLocation());
+        this.addPiece(opponentKing);
+
+        return kingIsChecked;
+    }
+
+    @Override
+    public boolean isKingCheckmate(ChessPiece attackingPiece, ChessPiece opponentKing) {
+        if (isKingChecked(attackingPiece, opponentKing)) {
+            if (opponentKing.getPossibleMoves(this).size() == 0) {
+                for (ChessPiece[] row : this) {
+                    for (ChessPiece piece : row) {
+                        List<Square> possibleMoves = new ArrayList<>();
+                        if (piece != null && !piece.equals(opponentKing) && piece.getColor() != attackingPiece.getColor()) {
+                            possibleMoves = piece.getPossibleMoves(this);
+                            if (possibleMoves.size() > 0) {
+                                for (Square move: possibleMoves) {
+                                    ChessPiece destinationPiece = getPieceAt(move);
+                                    ChessPiece movingPiece = piece;
+                                    movingPiece.setLocation(move);
+                                    addPiece(movingPiece);
+                                    removePieceAt(piece.getLocation());
+
+                                    if (!isKingChecked(attackingPiece, opponentKing)) {
+                                        if (destinationPiece != null) {
+                                            addPiece(destinationPiece);
+                                        } else {
+                                            removePieceAt(move);
+                                        }
+                                        addPiece(piece);
+                                        return false;
+                                    }
+                                    if (destinationPiece != null) {
+                                        addPiece(destinationPiece);
+                                    } else {
+                                        removePieceAt(move);
+                                    }
+                                    addPiece(piece);
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

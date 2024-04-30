@@ -4,6 +4,9 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Color;
 import ax.ha.tdd.chess.engine.Square;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bishop extends ChessPieceBase implements ChessPiece {
 
     public Bishop(Color player, Square location) {
@@ -29,13 +32,37 @@ public class Bishop extends ChessPieceBase implements ChessPiece {
         int posY = location.getY() + stepY;
 
         while (posX != destination.getX() && posY != destination.getY()) {
-            if (chessboard.getPieceAt(new Square(posX, posY)) != null) {
-                return false;
+            try {
+                if (chessboard.getPieceAt(new Square(posX, posY)) != null) {
+                    return false;
+                }
+                posX += stepX;
+                posY += stepY;
+            } catch (IllegalArgumentException e) {
+                break;
             }
-            posX += stepX;
-            posY += stepY;
         }
 
         return true;
+    }
+
+    @Override
+    public List<Square> getPossibleMoves(Chessboard chessboard) {
+        List<Square> possibleMoves = new ArrayList<>();
+        int[] steps = {1, -1};
+        for (int stepX: steps) {
+            for (int stepY: steps) {
+                for (int i = 1; i<8; i++) {
+                    try {
+                        Square destination = new Square(location.getX() + stepX * i, location.getY() + stepY * i);
+                        if (canMove(chessboard, destination)) {
+                            possibleMoves.add(destination);
+                        }
+                    } catch (IllegalArgumentException ignore) {
+                    }
+                }
+            }
+        }
+        return possibleMoves;
     }
 }

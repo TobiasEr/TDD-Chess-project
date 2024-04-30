@@ -4,6 +4,9 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Color;
 import ax.ha.tdd.chess.engine.Square;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class King extends ChessPieceBase implements ChessPiece{
 
     public King(Color player, Square location) {
@@ -27,7 +30,6 @@ public class King extends ChessPieceBase implements ChessPiece{
         for (ChessPiece[] row : chessboard) {
             for (ChessPiece piece : row) {
                 if (piece != null && !piece.equals(this)) {
-
                     // Will only check pieces of the other color.
                     if (piece.getColor() != color) {
                         if (piece.getType() == PieceType.PAWN) {
@@ -51,14 +53,17 @@ public class King extends ChessPieceBase implements ChessPiece{
                                 return false;
                             }
                         } else {
+                            chessboard.removePieceAt(location);
                             if (piece.canMove(chessboard, destination)) {
                                 if (destinationPiece != null) {
                                     chessboard.addPiece(destinationPiece);
                                 } else {
                                     chessboard.removePieceAt(destination);
                                 }
+                                chessboard.addPiece(this);
                                 return false;
                             }
+                            chessboard.addPiece(this);
                         }
 
                         if (destinationPiece != null) {
@@ -72,5 +77,26 @@ public class King extends ChessPieceBase implements ChessPiece{
         }
 
         return true;
+    }
+
+    @Override
+    public List<Square> getPossibleMoves(Chessboard chessboard) {
+        List<Square> possibleMoves = new ArrayList<>();
+        Square destination;
+
+        int[] values = {-1, 0, 1};
+        for (int i: values) {
+            for (int j: values) {
+                if (j != 0 && i != 0) {
+                    try {
+                        destination = new Square(location.getX() + i, location.getY() + j);
+                        if (canMove(chessboard, destination)) {
+                            possibleMoves.add(destination);
+                        }
+                    } catch (IllegalArgumentException ignore){}
+                }
+            }
+        }
+        return possibleMoves;
     }
 }

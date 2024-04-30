@@ -4,6 +4,8 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Square;
 import ax.ha.tdd.chess.engine.Color;
 
+import java.util.List;
+
 public interface ChessPiece {
     /**
      * The graphical symbol to use for display of this piece
@@ -33,4 +35,6 @@ public interface ChessPiece {
     void setLocation(Square newLocation);
 
     boolean sameColorOrKingAtDestination(ChessPiece destinationPiece);
+
+    List<Square> getPossibleMoves(Chessboard chessboard);
 }

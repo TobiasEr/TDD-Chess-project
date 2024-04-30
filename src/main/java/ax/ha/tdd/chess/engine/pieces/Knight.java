@@ -4,9 +4,12 @@ import ax.ha.tdd.chess.engine.Chessboard;
 import ax.ha.tdd.chess.engine.Color;
 import ax.ha.tdd.chess.engine.Square;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Knight extends ChessPieceBase implements ChessPiece {
 
-    int[][] possibleMoves = {{-2,-1},{-2,1},{-1,-2},{1,-2},
+    int[][] movePatterns = {{-2,-1},{-2,1},{-1,-2},{1,-2},
             {2,-1},{2,1},{1,2},{-1,2}};
 
     public Knight(Color player, Square location) {
@@ -20,7 +23,7 @@ public class Knight extends ChessPieceBase implements ChessPiece {
             return false; // Cannot capture own piece
         }
 
-        for (int[] moves : possibleMoves) {
+        for (int[] moves : movePatterns) {
             try {
                 Square square = new Square(location.getX() + moves[0], location.getY() + moves[1]);
                 if (square.equals(destination)) {
@@ -30,5 +33,19 @@ public class Knight extends ChessPieceBase implements ChessPiece {
         }
 
         return false;
+    }
+
+    @Override
+    public List<Square> getPossibleMoves(Chessboard chessboard) {
+        List<Square> possibleMoves = new ArrayList<>();
+        for (int[] moves : movePatterns) {
+            try {
+                Square square = new Square(location.getX() + moves[0], location.getY() + moves[1]);
+                if (canMove(chessboard, square)) {
+                    possibleMoves.add(square);
+                }
+            } catch (IllegalArgumentException ignored) {}
+        }
+        return possibleMoves;
     }
 }
