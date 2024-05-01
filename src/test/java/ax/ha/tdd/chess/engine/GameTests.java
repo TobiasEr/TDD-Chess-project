@@ -88,6 +88,6 @@ public class GameTests {
 
         String expectedOutput = "Player tried to perform move: e2-e4";
         assertEquals(expectedOutput, outputStream.toString().trim());
-        assertEquals(game.getLastMoveResult(), "Player moved piece from e2 to e4");
+        assertEquals(game.getLastMoveResult(), "Player moved PAWN from e2 to e4");
     }
 }
