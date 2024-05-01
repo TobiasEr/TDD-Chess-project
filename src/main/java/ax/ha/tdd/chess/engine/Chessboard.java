@@ -10,4 +10,6 @@ public interface Chessboard extends Iterable<ChessPiece[]>{
     boolean isKingChecked(final ChessPiece attackingPiece, final ChessPiece opponentKing);
     ChessPiece getOpponentKing(final Color color);
     boolean isKingCheckmate(final ChessPiece attackingPiece, final ChessPiece opponentKing);
+    void increaseMovesMade();
+    int getMovesMade();
 }

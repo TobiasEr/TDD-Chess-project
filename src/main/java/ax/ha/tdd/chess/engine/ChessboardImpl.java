@@ -12,6 +12,8 @@ public class ChessboardImpl implements Chessboard {
     // [y][x]
     private final ChessPiece[][] board = new ChessPieceBase[8][8];
 
+    private int movesMade = 0;
+
     public static ChessboardImpl startingBoard() {
         final ChessboardImpl chessboard = new ChessboardImpl();
 
@@ -103,6 +105,16 @@ public class ChessboardImpl implements Chessboard {
             }
         }
         return false;
+    }
+
+    @Override
+    public void increaseMovesMade() {
+        movesMade++;
+    }
+
+    @Override
+    public int getMovesMade() {
+        return movesMade;
     }
 
     /**

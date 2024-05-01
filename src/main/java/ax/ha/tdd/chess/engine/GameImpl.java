@@ -51,6 +51,7 @@ public class GameImpl implements Game{
             }
 
             if (sourcePiece.canMove(board, destination)) {
+                board.increaseMovesMade();
                 sourcePiece.setLocation(destination);
                 board.addPiece(sourcePiece);
                 board.removePieceAt(source);
