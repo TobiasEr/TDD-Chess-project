@@ -16,17 +16,30 @@ public class King extends ChessPieceBase implements ChessPiece{
     @Override
     public boolean canMove(Chessboard chessboard, Square destination) {
         int deltaY = Math.abs(destination.getY() - location.getY());
-        int deltaX = Math.abs(destination.getX() - location.getX());
+        int deltaX = destination.getX() - location.getX();
 
         ChessPiece destinationPiece = chessboard.getPieceAt(destination);
         if (sameColorOrKingAtDestination(destinationPiece)) {
             return false;
         }
 
+        if (castling(chessboard, deltaX, deltaY)) {
+            return true;
+        }
+
+        deltaX = Math.abs(deltaX);
         if (!(deltaY == 0 && deltaX == 1 || deltaY == 1 && deltaX == 0 || deltaY == 1 && deltaX == 1)) {
             return false;
         }
 
+        if (isDestinationSafe(chessboard, destination, destinationPiece)) {
+            hasPieceMoved = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDestinationSafe(Chessboard chessboard, Square destination, ChessPiece destinationPiece) {
         for (ChessPiece[] row : chessboard) {
             for (ChessPiece piece : row) {
                 if (piece != null && !piece.equals(this)) {
@@ -77,6 +90,40 @@ public class King extends ChessPieceBase implements ChessPiece{
         }
 
         return true;
+    }
+
+    private boolean castling(Chessboard chessboard, int deltaX, int deltaY) {
+        if (!hasPieceMoved && !isChecked && deltaY == 0) {
+            if (deltaX == -2) {
+                ChessPiece rook = chessboard.getPieceAt(new Square(0, location.getY()));
+                if (rook != null && !rook.getHasPieceMoved() &&
+                        chessboard.getPieceAt(new Square(1, location.getY())) == null &&
+                        chessboard.getPieceAt(new Square(2, location.getY())) == null &&
+                        chessboard.getPieceAt(new Square(3, location.getY())) == null) {
+                    if (isDestinationSafe(chessboard, new Square(2, location.getY()), null) &&
+                            isDestinationSafe(chessboard, new Square(3, location.getY()), null)) {
+                        rook.setLocation(new Square(3, location.getY()));
+                        chessboard.addPiece(rook);
+                        chessboard.removePieceAt(new Square(0, location.getY()));
+                        return true;
+                    }
+                }
+            } else if (deltaX == 2) {
+                ChessPiece rook = chessboard.getPieceAt(new Square(7, location.getY()));
+                if (rook != null && !rook.getHasPieceMoved() &&
+                        chessboard.getPieceAt(new Square(5, location.getY())) == null &&
+                        chessboard.getPieceAt(new Square(6, location.getY())) == null) {
+                    if (isDestinationSafe(chessboard, new Square(5, location.getY()), null) &&
+                            isDestinationSafe(chessboard, new Square(6, location.getY()), null)) {
+                        rook.setLocation(new Square(5, location.getY()));
+                        chessboard.addPiece(rook);
+                        chessboard.removePieceAt(new Square(0, location.getY()));
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

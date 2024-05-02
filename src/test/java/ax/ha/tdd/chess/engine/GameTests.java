@@ -116,4 +116,23 @@ public class GameTests {
 
         System.out.println(new ChessboardWriter().print(game.getBoard()));
     }
+
+    @Test
+    public void testKingAndRookHasMovedAfterCastling() {
+        Game game = new GameImpl();
+
+        game.getBoard().removePieceAt(new Square("b1"));
+        game.getBoard().removePieceAt(new Square("c1"));
+        game.getBoard().removePieceAt(new Square("d1"));
+
+        ChessPiece whiteRook = game.getBoard().getPieceAt(new Square("a1"));
+        ChessPiece whiteKing = game.getBoard().getPieceAt(new Square("e1"));
+
+        game.move("e1-c1");
+
+        assertEquals(game.getBoard().getPieceAt(new Square("c1")), whiteKing);
+        assertEquals(game.getBoard().getPieceAt(new Square("d1")), whiteRook);
+        assertNull(game.getBoard().getPieceAt(new Square("e1")));
+        assertNull(game.getBoard().getPieceAt(new Square("a1")));
+    }
 }

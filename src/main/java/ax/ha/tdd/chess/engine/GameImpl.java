@@ -120,6 +120,9 @@ public class GameImpl implements Game {
                 gameOver = true;
             } else if (board.isKingChecked(sourcePiece, opponentKing)) {
                 lastMoveResult += ". " + opponentKing.getColor() + " is checked!";
+                opponentKing.setPieceChecked(true);
+            } else {
+                opponentKing.setPieceChecked(false);
             }
         } else {
             lastMoveResult = "Illegal move was tried.";

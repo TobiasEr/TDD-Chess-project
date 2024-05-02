@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Rook extends ChessPieceBase implements ChessPiece {
 
+    private boolean isPieceMoving = true;
+
     public Rook(Color player, Square location) {
         super(PieceType.ROOK, player, location);
     }
@@ -42,6 +44,9 @@ public class Rook extends ChessPieceBase implements ChessPiece {
                 }
             }
         }
+        if (isPieceMoving) {
+            hasPieceMoved = true;
+        }
         return true;
     }
 
@@ -49,6 +54,7 @@ public class Rook extends ChessPieceBase implements ChessPiece {
     public List<Square> getPossibleMoves(Chessboard chessboard) {
         List<Square> possibleMoves = new ArrayList<>();
         int[] steps = {1, -1};
+        isPieceMoving = false;
 
         for (int step: steps) {
             for (int i = 1; i<8; i++) {
@@ -66,6 +72,7 @@ public class Rook extends ChessPieceBase implements ChessPiece {
                 } catch (IllegalArgumentException ignore) {}
             }
         }
+        isPieceMoving = true;
         return possibleMoves;
     }
 }

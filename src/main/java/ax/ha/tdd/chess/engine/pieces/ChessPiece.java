@@ -31,10 +31,9 @@ public interface ChessPiece {
      * Can the piece move to the destination square on this chessboard?
      */
     boolean canMove(Chessboard chessboard, Square destination);
-
     void setLocation(Square newLocation);
-
     boolean sameColorOrKingAtDestination(ChessPiece destinationPiece);
-
     List<Square> getPossibleMoves(Chessboard chessboard);
+    boolean getHasPieceMoved();
+    void setPieceChecked(boolean checked);
 }

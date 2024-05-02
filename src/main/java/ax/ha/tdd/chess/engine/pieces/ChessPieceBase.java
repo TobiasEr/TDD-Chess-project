@@ -12,6 +12,8 @@ public abstract class ChessPieceBase implements ChessPiece {
     protected final PieceType type;
 
     protected Square location;
+    protected boolean hasPieceMoved = false;
+    protected boolean isChecked = false;
 
     public ChessPieceBase(PieceType type, final Color player,
                           final Square location) {
@@ -32,6 +34,14 @@ public abstract class ChessPieceBase implements ChessPiece {
 
     public Square getLocation() {
         return location;
+    }
+
+    public boolean getHasPieceMoved() {
+        return hasPieceMoved;
+    }
+
+    public void setPieceChecked(boolean checked) {
+        isChecked = checked;
     }
 
 
