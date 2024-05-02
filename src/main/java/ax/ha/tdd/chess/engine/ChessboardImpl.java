@@ -6,12 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ChessboardImpl implements Chessboard {
-    // This could just as easily be replaced with a List or Set,
-    // since the ChessPieces right now keep track of their own location.
-    // Feel free to change this however you like
-    // [y][x]
     private final ChessPiece[][] board = new ChessPieceBase[8][8];
-
     private int movesMade = 0;
 
     public static ChessboardImpl startingBoard() {
@@ -39,72 +34,16 @@ public class ChessboardImpl implements Chessboard {
     }
 
     @Override
-    public ChessPiece getOpponentKing(Color color) {
-        ChessPiece opponentKing = null;
+    public King getOpponentKing(Color color) {
+        King opponentKing = null;
         for (ChessPiece[] row : this) {
             for (ChessPiece piece : row) {
                 if (piece != null && piece.getType() == PieceType.KING && piece.getColor() != color) {
-                    opponentKing = piece;
+                    opponentKing = (King) piece;
                 }
             }
         }
         return opponentKing;
-    }
-
-    @Override
-    public boolean isKingChecked(ChessPiece attackingPiece, ChessPiece opponentKing) {
-        boolean kingIsChecked;
-
-        this.removePieceAt(opponentKing.getLocation());
-        kingIsChecked = attackingPiece.canMove(this, opponentKing.getLocation());
-        this.addPiece(opponentKing);
-
-        return kingIsChecked;
-    }
-
-    @Override
-    public boolean isKingCheckmate(ChessPiece attackingPiece, ChessPiece opponentKing) {
-        if (isKingChecked(attackingPiece, opponentKing)) {
-            if (opponentKing.getPossibleMoves(this).size() == 0) {
-                for (ChessPiece[] row : this) {
-                    for (ChessPiece piece : row) {
-                        List<Square> possibleMoves;
-                        if (piece != null && !piece.equals(opponentKing) && piece.getColor() != attackingPiece.getColor()) {
-                            possibleMoves = piece.getPossibleMoves(this);
-                            if (possibleMoves.size() > 0) {
-                                for (Square move: possibleMoves) {
-                                    ChessPiece destinationPiece = getPieceAt(move);
-                                    Square srcLocation = piece.getLocation();
-                                    piece.setLocation(move);
-                                    addPiece(piece);
-                                    removePieceAt(srcLocation);
-
-                                    if (!isKingChecked(attackingPiece, opponentKing)) {
-                                        if (destinationPiece != null) {
-                                            addPiece(destinationPiece);
-                                        } else {
-                                            removePieceAt(move);
-                                        }
-                                        piece.setLocation(srcLocation);
-                                        addPiece(piece);
-                                        return false;
-                                    }
-                                    if (destinationPiece != null) {
-                                        addPiece(destinationPiece);
-                                    } else {
-                                        removePieceAt(move);
-                                    }
-                                    piece.setLocation(srcLocation);
-                                    addPiece(piece);
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -115,6 +54,18 @@ public class ChessboardImpl implements Chessboard {
     @Override
     public int getMovesMade() {
         return movesMade;
+    }
+
+    public void resetMovesMade() {
+        movesMade = 0;
+    }
+
+    @Override
+    public void movePiece(ChessPiece piece, Square destination) {
+        Square location = piece.getLocation();
+        piece.setLocation(destination);
+        addPiece(piece);
+        removePieceAt(location);
     }
 
     /**

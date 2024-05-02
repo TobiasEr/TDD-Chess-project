@@ -7,7 +7,7 @@ import ax.ha.tdd.chess.engine.Square;
 import java.util.ArrayList;
 import java.util.List;
 
-public class King extends ChessPieceBase implements ChessPiece{
+public class King extends ChessPieceBase implements ChessPiece {
 
     public King(Color player, Square location) {
         super(PieceType.KING, player, location);
@@ -32,62 +32,90 @@ public class King extends ChessPieceBase implements ChessPiece{
             return false;
         }
 
-        if (isDestinationSafe(chessboard, destination, destinationPiece)) {
+        if (isDestinationSafe(chessboard, destination)) {
             hasPieceMoved = true;
             return true;
         }
         return false;
     }
 
-    private boolean isDestinationSafe(Chessboard chessboard, Square destination, ChessPiece destinationPiece) {
+    public boolean isKingChecked(Chessboard chessboard) {
+        boolean kingIsChecked = false;
+
+        chessboard.addPiece(new Knight(color, location));
         for (ChessPiece[] row : chessboard) {
             for (ChessPiece piece : row) {
-                if (piece != null && !piece.equals(this)) {
-                    // Will only check pieces of the other color.
-                    if (piece.getColor() != color) {
-                        if (piece.getType() == PieceType.PAWN) {
-                            // If the piece is a pawn then it places a Knight piece (can be any piece) on the
-                            // destination square. This is to check if a pawn can attack on that square.
-                            chessboard.addPiece(new Knight(color, destination));
-                        } else {
-                            // If it's any other piece then it removes the piece at the destination.
-                            // Because if there is a piece standing there that the king can attack then the piece that
-                            // this currently checks can not move there, therefore the square needs to be empty.
-                            chessboard.removePieceAt(destination);
-                        }
+                if (piece != null && piece.getColor() != color && piece.canMove(chessboard, location)) {
+                    kingIsChecked = true;
+                }
+            }
+        }
 
-                        if (piece.getType() == PieceType.KING) {
-                            // This is to avoid using canMove on a king piece to avoid going into an infinite loop.
-                            int deltaKingX = Math.abs(piece.getLocation().getX() - destination.getX());
-                            int deltaKingY = Math.abs(piece.getLocation().getY() - destination.getY());
-                            if ((deltaKingY == 1 && deltaKingX == 0) ||
-                                    (deltaKingY == 0 && deltaKingX == 1) ||
-                                    (deltaKingY == 1 && deltaKingX == 1)) {
-                                return false;
-                            }
-                        } else {
-                            chessboard.removePieceAt(location);
-                            if (piece.canMove(chessboard, destination)) {
+        chessboard.addPiece(this);
+
+        return kingIsChecked;
+    }
+
+    public boolean isKingCheckmate(Chessboard chessboard) {
+        if (!isKingChecked(chessboard)) {
+            return false;
+        }
+
+        if (!getPossibleMoves(chessboard).isEmpty()) {
+            return false;
+        }
+
+        for (ChessPiece[] row : chessboard) {
+            for (ChessPiece piece : row) {
+                if (piece != null && !piece.equals(this) && piece.getColor() == color) {
+                    List<Square> possibleMoves = piece.getPossibleMoves(chessboard);
+                    if (possibleMoves.size() > 0) {
+                        for (Square move : possibleMoves) {
+                            // Moves the piece and saves the piece at the destination to be able to revert the move.
+                            ChessPiece destinationPiece = chessboard.getPieceAt(move);
+                            Square srcLocation = piece.getLocation();
+                            chessboard.movePiece(piece, move);
+
+                            // If the king is not checked after the move then it is not a checkmate.
+                            if (!isKingChecked(chessboard)) {
+                                // Moves the pieces back to their original spots to revert the board.
+                                chessboard.movePiece(piece, srcLocation);
                                 if (destinationPiece != null) {
                                     chessboard.addPiece(destinationPiece);
-                                } else {
-                                    chessboard.removePieceAt(destination);
                                 }
-                                chessboard.addPiece(this);
+
                                 return false;
                             }
-                            chessboard.addPiece(this);
-                        }
-
-                        if (destinationPiece != null) {
-                            chessboard.addPiece(destinationPiece);
-                        } else {
-                            chessboard.removePieceAt(destination);
+                            chessboard.movePiece(piece, srcLocation);
+                            if (destinationPiece != null) {
+                                chessboard.addPiece(destinationPiece);
+                            }
                         }
                     }
                 }
             }
         }
+        return true;
+    }
+
+    private boolean isDestinationSafe(Chessboard chessboard, Square destination) {
+        // Moves the king to the destination and looks if it is checked.
+        Square srcLocation = location;
+        ChessPiece destinationPiece = chessboard.getPieceAt(destination);
+        chessboard.movePiece(this, destination);
+
+        //If it is checked in the destination spot it is not a safe move.
+        if (isKingChecked(chessboard)) {
+            // Reverts the pieces to their places.
+            chessboard.movePiece(this, srcLocation);
+            if (destinationPiece != null)
+                chessboard.addPiece(destinationPiece);
+
+            return false;
+        }
+        chessboard.movePiece(this, srcLocation);
+        if (destinationPiece != null)
+            chessboard.addPiece(destinationPiece);
 
         return true;
     }
@@ -96,12 +124,14 @@ public class King extends ChessPieceBase implements ChessPiece{
         if (!hasPieceMoved && !isChecked && deltaY == 0) {
             if (deltaX == -2) {
                 ChessPiece rook = chessboard.getPieceAt(new Square(0, location.getY()));
+                // Checks that the rook hasn't moved yet and that all squares between the Rook and the king are empty.
                 if (rook != null && !rook.getHasPieceMoved() &&
                         chessboard.getPieceAt(new Square(1, location.getY())) == null &&
                         chessboard.getPieceAt(new Square(2, location.getY())) == null &&
                         chessboard.getPieceAt(new Square(3, location.getY())) == null) {
-                    if (isDestinationSafe(chessboard, new Square(2, location.getY()), null) &&
-                            isDestinationSafe(chessboard, new Square(3, location.getY()), null)) {
+                    // If the destination and the square between is safe then the castling move is made.
+                    if (isDestinationSafe(chessboard, new Square(2, location.getY())) &&
+                                  isDestinationSafe(chessboard, new Square(3, location.getY()))) {
                         rook.setLocation(new Square(3, location.getY()));
                         chessboard.addPiece(rook);
                         chessboard.removePieceAt(new Square(0, location.getY()));
@@ -110,11 +140,13 @@ public class King extends ChessPieceBase implements ChessPiece{
                 }
             } else if (deltaX == 2) {
                 ChessPiece rook = chessboard.getPieceAt(new Square(7, location.getY()));
+                // Checks that the rook hasn't moved yet and that all squares between the Rook and the king are empty.
                 if (rook != null && !rook.getHasPieceMoved() &&
                         chessboard.getPieceAt(new Square(5, location.getY())) == null &&
                         chessboard.getPieceAt(new Square(6, location.getY())) == null) {
-                    if (isDestinationSafe(chessboard, new Square(5, location.getY()), null) &&
-                            isDestinationSafe(chessboard, new Square(6, location.getY()), null)) {
+                    // If the destination and the square between is safe then the castling move is made.
+                    if (isDestinationSafe(chessboard, new Square(5, location.getY())) &&
+                            isDestinationSafe(chessboard, new Square(6, location.getY()))) {
                         rook.setLocation(new Square(5, location.getY()));
                         chessboard.addPiece(rook);
                         chessboard.removePieceAt(new Square(0, location.getY()));
@@ -132,15 +164,16 @@ public class King extends ChessPieceBase implements ChessPiece{
         Square destination;
 
         int[] values = {-1, 0, 1};
-        for (int i: values) {
-            for (int j: values) {
-                if (j != 0 && i != 0) {
+        for (int i : values) {
+            for (int j : values) {
+                if (!(j == 0 && i == 0)) {
                     try {
                         destination = new Square(location.getX() + i, location.getY() + j);
                         if (canMove(chessboard, destination)) {
                             possibleMoves.add(destination);
                         }
-                    } catch (IllegalArgumentException ignore){}
+                    } catch (IllegalArgumentException ignore) {
+                    }
                 }
             }
         }

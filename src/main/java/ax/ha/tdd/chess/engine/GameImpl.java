@@ -14,7 +14,6 @@ public class GameImpl implements Game {
 
     @Override
     public Color getPlayerToMove() {
-        //TODO this should reflect the current state.
         return currentPlayer;
     }
 
@@ -25,8 +24,6 @@ public class GameImpl implements Game {
 
     @Override
     public String getLastMoveResult() {
-        //TODO this should be used to show the player what happened
-        //Illegal move, correct move, e2 moved to e4 etc. up to you!
         if (isNewGame) {
             return "Game hasn't begun";
         }
@@ -35,7 +32,6 @@ public class GameImpl implements Game {
 
     @Override
     public void move(String move) {
-        //TODO this should trigger your move logic.
         Square source;
         Square destination;
 
@@ -82,6 +78,7 @@ public class GameImpl implements Game {
         lastMoveResult = "Game is over! Type 'reset' to restart the game.";
         if (input.equals("reset")) {
             board = ChessboardImpl.startingBoard();
+            board.resetMovesMade();
             gameOver = false;
             currentPlayer = Color.WHITE;
             pawnChanging = false;
@@ -112,14 +109,14 @@ public class GameImpl implements Game {
             lastMoveResult = "Player moved " + sourcePiece.getType() +
                     " from " + pieceLocation.toAlgebraic() + " to " + destination.toAlgebraic();
 
-            ChessPiece opponentKing = board.getOpponentKing(sourcePiece.getColor());
+            King opponentKing = board.getOpponentKing(sourcePiece.getColor());
 
-            if (board.isKingCheckmate(sourcePiece, opponentKing)) {
+            if (opponentKing.isKingCheckmate(board)) {
                 lastMoveResult += ". " + opponentKing.getColor() + " is checkmate! " +
                         sourcePiece.getColor() + " won the match!";
                 gameOver = true;
-            } else if (board.isKingChecked(sourcePiece, opponentKing)) {
-                lastMoveResult += ". " + opponentKing.getColor() + " is checked!";
+            } else if (opponentKing.isKingChecked(board)) {
+                lastMoveResult += ". " + opponentKing.getColor() + " KING is checked!";
                 opponentKing.setPieceChecked(true);
             } else {
                 opponentKing.setPieceChecked(false);
