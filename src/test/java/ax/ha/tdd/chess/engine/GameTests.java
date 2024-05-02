@@ -2,6 +2,7 @@ package ax.ha.tdd.chess.engine;
 
 import ax.ha.tdd.chess.console.ChessboardWriter;
 import ax.ha.tdd.chess.engine.pieces.ChessPiece;
+import ax.ha.tdd.chess.engine.pieces.Pawn;
 import ax.ha.tdd.chess.engine.pieces.PieceType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -89,5 +90,30 @@ public class GameTests {
         String expectedOutput = "Player tried to perform move: e2-e4";
         assertEquals(expectedOutput, outputStream.toString().trim());
         assertEquals(game.getLastMoveResult(), "Player moved PAWN from e2 to e4");
+    }
+
+    @Test
+    public void testChangingPawn() {
+        Game game = new GameImpl();
+
+        // Emptying board to make the test easier to implement.
+        for (ChessPiece[] row: game.getBoard()) {
+            for (ChessPiece piece: row) {
+                if (piece != null)
+                    game.getBoard().removePieceAt(piece.getLocation());
+            }
+        }
+
+        Pawn changingPawn = new Pawn(Color.WHITE, new Square("f7"));
+        game.getBoard().addPiece(changingPawn);
+
+        game.move("f7-f8");
+        game.move("Q");
+
+        ChessPiece piece = game.getBoard().getPieceAt(new Square("f8"));
+        assertEquals(Color.WHITE, piece.getColor());
+        assertEquals(PieceType.QUEEN, piece.getType());
+
+        System.out.println(new ChessboardWriter().print(game.getBoard()));
     }
 }
