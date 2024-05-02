@@ -118,7 +118,7 @@ public class ChessboardImpl implements Chessboard {
     }
 
     /**
-     * Helper method to initialize chessboard with {@link ChessPieceStub}.
+     * Helper method to initialize chessboard with {@link ChessPiece}.
      * Basically mirrors all added pieces for both players.
      * When all pieces have been implemented, this should be replaced with the proper implementations.
      *
@@ -154,11 +154,6 @@ public class ChessboardImpl implements Chessboard {
                 case KING -> {
                     addPiece(new King(Color.BLACK, new Square(xCoordinate, yCoordinate)));
                     addPiece(new King(Color.WHITE, new Square(xCoordinate, 7 - yCoordinate)));
-                }
-                //TODO, when you implement a piece, add it as a case in this switch
-                default -> {
-                    addPiece(new ChessPieceStub(pieceType, Color.BLACK, new Square(xCoordinate, yCoordinate)));
-                    addPiece(new ChessPieceStub(pieceType, Color.WHITE, new Square(xCoordinate, 7 - yCoordinate)));
                 }
             }
         });
